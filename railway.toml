@@ -1,0 +1,4 @@
+builder = "DOCKERFILE"
+start = "node src/server.js"
+healthcheck_path = "/health"
+healthcheck_timeout = 120
