@@ -47,6 +47,22 @@ const bootstrapMemory = async () => {
 app.get("/health", (_, res) => {
   res.status(200).send("ok")
 })
+app.get("/", (_, res) => {
+  res
+    .status(200)
+    .send(
+      [
+        "OpenClaw Railway Template",
+        "",
+        "Endpoints:",
+        "GET  /health",
+        "GET  /memory",
+        "POST /memory",
+        "POST /memory/import",
+        "POST /chat"
+      ].join("\n")
+    )
+})
 app.get("/memory", (_, res) => {
   const m = loadMemory()
   res.status(200).json(m)
