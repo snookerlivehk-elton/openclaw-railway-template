@@ -42,11 +42,7 @@
       <div class="card">
         <h3>聊天測試</h3>
         <label>模型</label>
-        <select id="modelSel" style="width:100%">
-          <option value="openrouter/anthropic/claude-3.5-sonnet">Anthropic · Claude 3.5 Sonnet</option>
-          <option value="openrouter/x-ai/grok-2-latest">xAI · Grok 2 Latest</option>
-          <option value="openrouter/x-ai/grok-2-mini">xAI · Grok 2 Mini</option>
-        </select>
+        <select id="modelSel" style="width:100%"></select>
         <label>System 前置</label>
         <input id="systemInput" placeholder="可選：系統提示" style="width:100%" />
         <textarea id="chatInput" placeholder="輸入訊息..."></textarea>
@@ -113,6 +109,36 @@
           document.getElementById('chatOut').textContent = String(e)
         }
       }
+      ;(async () => {
+        try {
+          const j = await fetchJSON('/models')
+          const sel = document.getElementById('modelSel')
+          const defaults = [
+            { id: 'openrouter/anthropic/claude-3.5-sonnet', name: 'Anthropic · Claude 3.5 Sonnet' },
+            { id: 'openrouter/x-ai/grok-2-latest', name: 'xAI · Grok 2 Latest' },
+            { id: 'openrouter/x-ai/grok-2-mini', name: 'xAI · Grok 2 Mini' }
+          ]
+          const items = (j && Array.isArray(j.models) ? j.models : defaults)
+          items.forEach((m) => {
+            const opt = document.createElement('option')
+            opt.value = m.id
+            opt.textContent = m.name || m.id
+            sel.appendChild(opt)
+          })
+        } catch {
+          const sel = document.getElementById('modelSel')
+          ;[
+            { id: 'openrouter/anthropic/claude-3.5-sonnet', name: 'Anthropic · Claude 3.5 Sonnet' },
+            { id: 'openrouter/x-ai/grok-2-latest', name: 'xAI · Grok 2 Latest' },
+            { id: 'openrouter/x-ai/grok-2-mini', name: 'xAI · Grok 2 Mini' }
+          ].forEach((m) => {
+            const opt = document.createElement('option')
+            opt.value = m.id
+            opt.textContent = m.name
+            sel.appendChild(opt)
+          })
+        }
+      })()
     </script>
   </body>
   </html>

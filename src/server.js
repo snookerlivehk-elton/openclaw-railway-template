@@ -71,6 +71,32 @@ app.get("/memory", (_, res) => {
   const m = loadMemory()
   res.status(200).json(m)
 })
+app.get("/models", async (_, res) => {
+  const apiKey = process.env.OPENROUTER_API_KEY || ""
+  if (!apiKey) {
+    res.status(400).json({ error: "OPENROUTER_API_KEY missing" })
+    return
+  }
+  try {
+    const r = await fetch("https://openrouter.ai/api/v1/models", {
+      headers: { "Authorization": `Bearer ${apiKey}` }
+    })
+    if (!r.ok) {
+      const t = await r.text()
+      res.status(r.status).json({ error: t })
+      return
+    }
+    const j = await r.json()
+    const items = Array.isArray(j.data) ? j.data : []
+    const models = items.map((it) => ({
+      id: it.id || it.slug || "",
+      name: (it.name || it.id || "").toString()
+    })).filter((m) => m.id && m.id.startsWith("openrouter/"))
+    res.status(200).json({ models })
+  } catch (e) {
+    res.status(500).json({ error: String(e) })
+  }
+})
 app.post("/memory", (req, res) => {
   const body = req.body || {}
   saveMemory(body)
