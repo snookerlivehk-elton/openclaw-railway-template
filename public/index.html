@@ -41,6 +41,14 @@
       </div>
       <div class="card">
         <h3>聊天測試</h3>
+        <label>模型</label>
+        <select id="modelSel" style="width:100%">
+          <option value="openrouter/anthropic/claude-3.5-sonnet">Anthropic · Claude 3.5 Sonnet</option>
+          <option value="openrouter/x-ai/grok-2-latest">xAI · Grok 2 Latest</option>
+          <option value="openrouter/x-ai/grok-2-mini">xAI · Grok 2 Mini</option>
+        </select>
+        <label>System 前置</label>
+        <input id="systemInput" placeholder="可選：系統提示" style="width:100%" />
         <textarea id="chatInput" placeholder="輸入訊息..."></textarea>
         <button id="btnChat">POST /chat</button>
         <pre id="chatOut"></pre>
@@ -97,7 +105,9 @@
       document.getElementById('btnChat').onclick = async () => {
         try {
           const msg = document.getElementById('chatInput').value
-          const j = await fetchJSON('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: msg }] }) })
+          const model = document.getElementById('modelSel').value
+          const system = document.getElementById('systemInput').value
+          const j = await fetchJSON('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model, system, messages: [{ role: 'user', content: msg }] }) })
           document.getElementById('chatOut').textContent = JSON.stringify(j, null, 2)
         } catch (e) {
           document.getElementById('chatOut').textContent = String(e)

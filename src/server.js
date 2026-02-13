@@ -103,8 +103,11 @@ app.post("/chat", async (req, res) => {
     res.status(400).json({ error: "OPENROUTER_API_KEY missing" })
     return
   }
-  const model = process.env.OPENROUTER_MODEL || "openrouter/anthropic/claude-3.5-sonnet"
   const body = req.body || {}
+  const model =
+    (typeof body.model === "string" && body.model.trim().length ? body.model : null) ||
+    process.env.OPENROUTER_MODEL ||
+    "openrouter/anthropic/claude-3.5-sonnet"
   const messages = Array.isArray(body.messages) ? body.messages : []
   const mem = loadMemory()
   const systemPrefix = body.system || ""
