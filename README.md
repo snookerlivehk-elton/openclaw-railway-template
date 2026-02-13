@@ -24,6 +24,22 @@
 - Railway 模板目前以公共 Repo 為前提，模板才可供他人一鍵部署
 - 若僅自用，可直接以 CLI 上傳部署，但不具模板按鈕的體驗
 
+## rclone + Gmail 設定
+- 腳本位置: [scripts/openclaw_rclone_setup.sh](file:///c:/Users/User/.trae/openclaw-railway-template/scripts/openclaw_rclone_setup.sh)
+- 在 Railway 服務的 Exec 執行：
+
+```bash
+WORKSPACE=/data/workspace EMAIL=info.j18.hk@gmail.com APP_PASSWORD=lmwovcqjosaqians CLIENT_ID=855956380197-bokefikbhf7mhe808ie2idqopu0k6mt7.apps.googleusercontent.com bash /data/workspace/scripts/openclaw_rclone_setup.sh
+```
+
+## GitHub Actions 自動部署
+- 工作流: [.github/workflows/deploy-openclaw.yml](file:///c:/Users/User/.trae/openclaw-railway-template/.github/workflows/deploy-openclaw.yml)
+- 在 GitHub Repo Secrets 設定：
+- RAILWAY_TOKEN
+- RAILWAY_PROJECT_ID
+- RAILWAY_ENVIRONMENT_ID
+- 推送到 master/main 或手動 workflow_dispatch 會觸發部署
+
 ## 記憶遷移設計
 - 首次啟動時若偵測記憶檔不存在：
 - 若設定 OLD_MEMORY_URL，服務將自動抓取該 URL 的 JSON 並存入記憶檔
@@ -88,4 +104,3 @@ curl -X POST http://localhost:3000/chat \
 - 若使用 Dockerfile，本專案已設定健康檢查路徑與啟動命令
 - 請在 Railway 服務設定中附加 Volume 以確保記憶持久化
 - 若從 GitHub 觸發部署，Railway 將自動提示匯入 .env.example 變數
-
