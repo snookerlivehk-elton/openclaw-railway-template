@@ -4,6 +4,7 @@ import path from "path"
 import process from "process"
 const app = express()
 app.use(express.json({ limit: "2mb" }))
+app.use(express.static(path.join(process.cwd(), "public")))
 const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH || null
 const memoryPath =
   process.env.MEMORY_PATH ||
@@ -46,6 +47,9 @@ const bootstrapMemory = async () => {
 }
 app.get("/health", (_, res) => {
   res.status(200).send("ok")
+})
+app.get("/favicon.ico", (_, res) => {
+  res.status(204).end()
 })
 app.get("/", (_, res) => {
   res
