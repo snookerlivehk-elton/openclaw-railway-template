@@ -137,7 +137,14 @@ app.post("/chat", async (req, res) => {
   const messages = Array.isArray(body.messages) ? body.messages : []
   const mem = loadMemory()
   const systemPrefix = body.system || ""
-  const system = `${systemPrefix}` + (Object.keys(mem).length ? ` Memory: ${JSON.stringify(mem)}` : "")
+  const includeMemory = body.include_memory !== false
+  let memStr = ""
+  if (includeMemory) {
+    const limit = Number(body.memory_limit ?? process.env.MEMORY_LIMIT ?? 4000)
+    memStr = JSON.stringify(mem)
+    if (memStr.length > limit) memStr = memStr.slice(0, limit) + "...(truncated)"
+  }
+  const system = `${systemPrefix}` + (includeMemory && Object.keys(mem).length ? ` Memory: ${memStr}` : "")
   const finalMessages = system ? [{ role: "system", content: system }, ...messages] : messages
   try {
     const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
